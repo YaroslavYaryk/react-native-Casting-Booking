@@ -1,6 +1,5 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import { EventNavigator } from "./navigation/CastingNavigator";
 import { combineReducers, applyMiddleware } from "redux";
 import ReduxThunk from "redux-thunk";
 import { configureStore } from "@reduxjs/toolkit";
@@ -10,6 +9,8 @@ import eventTimeClockReducer from "./booking/reducers/eventTimeClockReducer";
 import eventTeamReducer from "./booking/reducers/eventTeamReducer";
 import eventArtistTeamReducer from "./booking/reducers/eventArtistTeamReducer";
 import eventProductsReducer from "./booking/reducers/eventProductsReducer";
+import AuthReducer from "./booking/reducers/AuthReducer";
+import AppNavigator from "./navigation/AppNavigator";
 
 const rootReducer = combineReducers({
     events: eventReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
     eventTeam: eventTeamReducer,
     eventArtistTeam: eventArtistTeamReducer,
     eventProducts: eventProductsReducer,
+    auth: AuthReducer,
 });
 
 const booking = configureStore(
@@ -34,7 +36,7 @@ const booking = configureStore(
 export default function App() {
     return (
         <Provider store={booking}>
-            <EventNavigator />
+            <AppNavigator />
         </Provider>
     );
 }

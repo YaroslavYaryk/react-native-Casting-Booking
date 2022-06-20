@@ -12,14 +12,20 @@ import { DataTable } from "react-native-paper";
 const ArtistTeam = (props) => {
     return (
         <View style={styles.container}>
-            {props.artistTeam.map((elem) => {
-                return (
-                    <View style={styles.artistContainer} key={elem.id}>
-                        <Text style={styles.artistIcon}>☑</Text>
-                        <Text style={styles.artistName}>{elem.name}</Text>
-                    </View>
-                );
-            })}
+            {props.artistTeam.length ? (
+                props.artistTeam.map((elem) => {
+                    return (
+                        <View style={styles.artistContainer} key={elem.id}>
+                            <Text style={styles.artistIcon}>☑</Text>
+                            <Text style={styles.artistName}>{elem.name}</Text>
+                        </View>
+                    );
+                })
+            ) : (
+                <Text style={styles.emptyTeam}>
+                    Artist team is not avaliable for now
+                </Text>
+            )}
         </View>
     );
 };
@@ -36,6 +42,9 @@ const styles = StyleSheet.create({
     },
     artistName: {
         marginLeft: 10,
+    },
+    emptyTeam: {
+        marginHorizontal: 15,
     },
 });
 

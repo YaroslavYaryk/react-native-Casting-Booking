@@ -10,14 +10,26 @@ import React, { Component } from "react";
 import EventAddStaff from "./EventAddStaff";
 
 const EventInfo = (props) => {
-    const listItems = props.selectedEvent.aditional_staff.map((number) => (
-        <View key={number.toString()} style={{ flexDirection: "row" }}>
-            <Text style={{ color: "green", marginRight: 5, fontSize: 17 }}>
-                ☑
-            </Text>
-            <Text style={styles.eventInfoItemText}>{number}</Text>
-        </View>
-    ));
+    var listItems;
+    if (Array.isArray(props.selectedEvent.aditional_staff)) {
+        listItems = props.selectedEvent.aditional_staff.map((number) => (
+            <View key={number.toString()} style={{ flexDirection: "row" }}>
+                <Text style={{ color: "green", marginRight: 5, fontSize: 17 }}>
+                    ☑
+                </Text>
+                <Text style={styles.eventInfoItemText}>{number}</Text>
+            </View>
+        ));
+    } else {
+        listItems = [props.selectedEvent.aditional_staff].map((number) => (
+            <View key={number.toString()} style={{ flexDirection: "row" }}>
+                <Text style={{ color: "green", marginRight: 5, fontSize: 17 }}>
+                    ☑
+                </Text>
+                <Text style={styles.eventInfoItemText}>{number}</Text>
+            </View>
+        ));
+    }
 
     return (
         <View style={styles.eventInfo}>

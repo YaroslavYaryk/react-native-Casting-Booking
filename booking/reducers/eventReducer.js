@@ -15,7 +15,7 @@ const eventReducer = (state = initialState, action) => {
     switch (action.type) {
         case READ_EVENT:
             return {
-                userEvents: action.userProducts,
+                userEvents: action.userEvents,
             };
 
         // case CREATE_PRODUCT:
