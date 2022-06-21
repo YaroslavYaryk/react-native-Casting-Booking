@@ -42,6 +42,7 @@ const formReducer = (state, action) => {
 const Login = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
+    const [diabledButton, setDisabledButton] = useState(true);
 
     const dispatch = useDispatch();
 
@@ -53,6 +54,17 @@ const Login = (props) => {
             ]);
         }
     }, [error]);
+
+    useEffect(() => {
+        console.log(formState);
+        console.log(diabledButton);
+        if (formState.formIsValid) {
+            console.log("here");
+            setDisabledButton(false);
+        } else {
+            setDisabledButton(true);
+        }
+    });
 
     const authHandler = async () => {
         setError(null);
@@ -99,6 +111,14 @@ const Login = (props) => {
     const redirectToRegistration = () => {
         props.navigation.navigate("Registration");
     };
+
+    if (isLoading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size="large" color={Colors.primary} />
+            </View>
+        );
+    }
 
     return (
         <View style={styles.screen}>
@@ -158,6 +178,7 @@ const Login = (props) => {
                                 title="Login"
                                 color={Colors.primary}
                                 onPress={authHandler}
+                                disabled={diabledButton}
                             />
                             {/* )} */}
                         </View>
@@ -214,6 +235,11 @@ const styles = StyleSheet.create({
     },
     inputBlock: {
         width: "85%",
+    },
+    centered: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
 

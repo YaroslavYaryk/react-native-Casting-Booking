@@ -21,42 +21,41 @@ export const authenticate = (token, email, expiryTime) => {
     };
 };
 
-export const signUp = (email, password) => {
+export const signUp = (firstName, lastName, email, password) => {
     return async (dispatch) => {
         const response = await fetch(
-            "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAXZ9voZYAOWtXk5Hkzfppw_fzuYRfHbtg",
+            `${HOST}:${PORT}/users/api/auth/register/`,
             {
-                method: "POST",
+                method: "post",
                 headers: {
                     "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
                 },
                 body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName,
                     email: email,
                     password: password,
-                    returnSecureToken: true,
                 }),
             }
         );
-
         if (!response.ok) {
             const errorResData = await response.json();
-            const errorId = errorResData.error.message;
             let message = "Something went wrong!";
-            if (errorId === "EMAIL_EXISTS") {
-                message = "This email exists already!";
+            console.log(errorResData);
+            if (
+                errorResData.message ==
+                "UNIQUE constraint failed: users_user.email"
+            ) {
+                message = "This email already exists";
             }
+
             throw new Error(message);
         }
-
         const resData = await response.json();
-
-        dispatch(
-            authenticate(resData.idToken, parseInt(resData.expiresIn) * 1000)
-        );
-        const expirationDate = new Date(
-            new Date().getTime() + parseInt(resData.expiresIn) * 1000
-        );
-        saveDataToStorage(resData.idToken, expirationDate);
+        dispatch(authenticate(resData.token, email, 1800 * 1000));
+        const expirationDate = new Date(new Date().getTime() + 1800 * 1000);
+        saveDataToStorage(resData.token, email, expirationDate);
     };
 };
 

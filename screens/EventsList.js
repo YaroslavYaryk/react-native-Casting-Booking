@@ -70,7 +70,7 @@ const EventList = (props) => {
     if (!isLoading && events.length === 0) {
         return (
             <View style={styles.centered}>
-                <Text>There is no any product, please add some!</Text>
+                <Text>There is no any event for you now!</Text>
             </View>
         );
     }

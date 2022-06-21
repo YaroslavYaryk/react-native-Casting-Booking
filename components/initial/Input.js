@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 
 const INPUT_CHANGE = "INPUT_CHANGE";
@@ -23,12 +23,13 @@ const inputReducer = (state, action) => {
 };
 
 const Input = (props) => {
+    const [error, setError] = useState(props.errorText);
+
     const [inputState, dispatch] = useReducer(inputReducer, {
         value: props.initialValue ? props.initialValue : "",
         isValid: props.initiallyValid,
         touched: false,
     });
-
     const { onInputChange, id } = props;
 
     useEffect(() => {
@@ -49,16 +50,24 @@ const Input = (props) => {
         }
         if (!props.login) {
             if (props.minLength != null && text.length < props.minLength) {
+                setError(`length is lower then ${props.minLength}`);
+                isValid = false;
+            }
+            if (id === "password" && !/^[A-Za-z0-9]*$/.test(text)) {
+                setError("only letters and numbers");
                 isValid = false;
             }
         }
+
         dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
     };
 
     const lostFocusHandler = () => {
         dispatch({ type: INPUT_BLUR });
     };
-
+    if (id === "password") {
+        console.log(error);
+    }
     return (
         <View style={styles.formControl}>
             <Text style={styles.label}>{props.label}</Text>
@@ -69,12 +78,12 @@ const Input = (props) => {
                 onChangeText={textChangeHandler}
                 onBlur={lostFocusHandler}
             />
-            {!inputState.isValid && inputState.touched && props.errorText && (
+            {!inputState.isValid && inputState.touched && error && (
                 <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>{props.errorText}</Text>
+                    <Text style={styles.errorText}>{error}</Text>
                 </View>
             )}
-            {!inputState.isValid && inputState.touched && !props.errorText && (
+            {!inputState.isValid && inputState.touched && !error && (
                 <View style={styles.errorContainerLine}></View>
             )}
         </View>

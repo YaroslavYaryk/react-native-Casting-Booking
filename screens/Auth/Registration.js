@@ -1,17 +1,18 @@
-import React, { useEffect, useCallback, useReducer } from "react";
+import React, { useEffect, useCallback, useReducer, useState } from "react";
 import {
     View,
-    ActivityIndicator,
     StyleSheet,
     Text,
     TouchableOpacity,
     ScrollView,
-    TextInput,
+    Alert,
     Button,
+    ActivityIndicator,
 } from "react-native";
 import Input from "../../components/initial/Input";
 import Colors from "../../constants/Colors";
 import { useDispatch } from "react-redux";
+import * as authActions from "../../booking/actions/Auth";
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
@@ -39,6 +40,28 @@ const formReducer = (state, action) => {
 };
 
 const Registration = (props) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
+    const [diabledButton, setDisabledButton] = useState(true);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert("An Error Occured", error, [
+                { text: "Okay", onPress: setError(null) },
+            ]);
+        }
+    }, [error]);
+    useEffect(() => {
+        if (formState.formIsValid) {
+            console.log("here");
+            setDisabledButton(false);
+        } else {
+            setDisabledButton(true);
+        }
+    });
+
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
             email: "",
@@ -50,6 +73,26 @@ const Registration = (props) => {
         },
         formIsValid: false,
     });
+
+    const authHandler = async () => {
+        setError(null);
+        let action;
+
+        action = authActions.signUp(
+            formState.inputValues.firstName,
+            formState.inputValues.lastName,
+            formState.inputValues.email,
+            formState.inputValues.password
+        );
+        setIsLoading(true);
+        try {
+            await dispatch(action);
+            // props.navigation.navigate("Shop");
+        } catch (err) {
+            setError(err.message);
+            setIsLoading(false);
+        }
+    };
 
     const inputChangeHandler = useCallback(
         (inputIdentifier, inputValue, inputValidity) => {
@@ -66,6 +109,14 @@ const Registration = (props) => {
     const redirectToLogin = () => {
         props.navigation.navigate("Login");
     };
+
+    if (isLoading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size="large" color={Colors.primary} />
+            </View>
+        );
+    }
 
     return (
         <View style={styles.screen}>
@@ -89,7 +140,7 @@ const Registration = (props) => {
                 <View style={styles.inputWrapper}>
                     <ScrollView style={styles.inputBlock}>
                         <Input
-                            id="firs_name"
+                            id="firstName"
                             label="First Name"
                             keyboardType="email-address"
                             required
@@ -100,13 +151,12 @@ const Registration = (props) => {
                             initialValue=""
                         />
                         <Input
-                            id="last_name"
+                            id="lastName"
                             label="Last Name"
                             keyboardType="email-address"
                             required
                             lastName
                             autoCapitalize="none"
-                            errorText="Please enter a valid last name address."
                             onInputChange={inputChangeHandler}
                             initialValue=""
                         />
@@ -117,7 +167,7 @@ const Registration = (props) => {
                             required
                             email
                             autoCapitalize="none"
-                            // errorText="Please enter a valid email address."
+                            errorText="Please enter a valid email address."
                             onInputChange={inputChangeHandler}
                             initialValue=""
                         />
@@ -141,9 +191,10 @@ const Registration = (props) => {
                             />
                         ) : ( */}
                             <Button
-                                title="Login"
+                                title="Register"
                                 color={Colors.primary}
-                                // onPress={authHandler}
+                                onPress={authHandler}
+                                disabled={diabledButton}
                             />
                             {/* )} */}
                         </View>
@@ -200,6 +251,11 @@ const styles = StyleSheet.create({
     },
     inputBlock: {
         width: "85%",
+    },
+    centered: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
 
