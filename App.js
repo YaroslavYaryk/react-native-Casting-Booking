@@ -11,6 +11,7 @@ import eventArtistTeamReducer from "./booking/reducers/eventArtistTeamReducer";
 import eventProductsReducer from "./booking/reducers/eventProductsReducer";
 import AuthReducer from "./booking/reducers/AuthReducer";
 import AppNavigator from "./navigation/AppNavigator";
+import UserReducer from "./booking/reducers/UserReducer";
 
 const rootReducer = combineReducers({
     events: eventReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
     eventArtistTeam: eventArtistTeamReducer,
     eventProducts: eventProductsReducer,
     auth: AuthReducer,
+    user: UserReducer,
 });
 
 const booking = configureStore(

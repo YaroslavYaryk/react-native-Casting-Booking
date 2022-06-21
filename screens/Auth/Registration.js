@@ -143,6 +143,7 @@ const Registration = (props) => {
                             id="firstName"
                             label="First Name"
                             keyboardType="email-address"
+                            secureTextEntry={false}
                             required
                             firstName
                             autoCapitalize="none"
@@ -154,6 +155,7 @@ const Registration = (props) => {
                             id="lastName"
                             label="Last Name"
                             keyboardType="email-address"
+                            secureTextEntry={false}
                             required
                             lastName
                             autoCapitalize="none"
@@ -164,6 +166,7 @@ const Registration = (props) => {
                             id="email"
                             label="E-Mail"
                             keyboardType="email-address"
+                            secureTextEntry={false}
                             required
                             email
                             autoCapitalize="none"
@@ -175,7 +178,7 @@ const Registration = (props) => {
                             id="password"
                             label="Password"
                             keyboardType="default"
-                            secureTextEntry
+                            secureTextEntry={true}
                             required
                             minLength={8}
                             autoCapitalize="none"

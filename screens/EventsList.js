@@ -14,14 +14,15 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/initial/CustomeHeaderButton";
 import * as authActions from "../booking/actions/Auth";
 import * as eventActions from "../booking/actions/events";
+import CustomHeaderButtonFontAwesome from "../components/initial/CustomeHeaderButtonFontAwesome";
 
 const EventList = (props) => {
     const events = useSelector((state) => state.events.userEvents);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
 
+    const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
-
     const loadEvents = useCallback(async () => {
         setError(null);
         setIsLoading(true);
@@ -34,16 +35,18 @@ const EventList = (props) => {
         setIsLoading(false);
     }, [dispatch, setError, setIsLoading]);
 
-    useEffect(() => {
-        const onFocusSub = props.navigation.addListener("focus", loadEvents);
+    // useEffect(() => {
+    //     const onFocusSub = props.navigation.addListener("focus", loadEvents);
 
-        return () => {
-            onFocusSub;
-        };
-    }, [loadEvents]);
+    //     return () => {
+    //         onFocusSub;
+    //     };
+    // }, [loadEvents]);
 
     useEffect(() => {
-        loadEvents();
+        if (token) {
+            loadEvents();
+        }
     }, [dispatch, loadEvents]);
 
     if (isLoading) {
@@ -124,13 +127,25 @@ export const screenOptions = (navData) => {
     return {
         headerTitle: "Events",
         headerRight: () => (
+            <HeaderButtons
+                HeaderButtonComponent={CustomHeaderButtonFontAwesome}
+            >
+                <Item
+                    title="User"
+                    iconName="user"
+                    onPress={() => {
+                        navData.navigation.navigate("UserProfile");
+                    }}
+                />
+            </HeaderButtons>
+        ),
+        headerLeft: () => (
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item
-                    title="Logout"
-                    iconName="logout"
+                    title="Menu"
+                    iconName="menu"
                     onPress={() => {
-                        authActions;
-                        dispatch(authActions.logout());
+                        navData.navigation.toggleDrawer();
                     }}
                 />
             </HeaderButtons>

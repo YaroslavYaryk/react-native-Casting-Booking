@@ -1,5 +1,12 @@
 import React, { useReducer, useEffect, useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 const INPUT_CHANGE = "INPUT_CHANGE";
 const INPUT_BLUR = "INPUT_BLUR";
@@ -24,6 +31,9 @@ const inputReducer = (state, action) => {
 
 const Input = (props) => {
     const [error, setError] = useState(props.errorText);
+    const [hiddenText, setHiddenText] = useState(props.secureTextEntry);
+    console.log(hiddenText);
+    const [hideUnhideTextIcon, setHideUnhideTextIcon] = useState("eye-off");
 
     const [inputState, dispatch] = useReducer(inputReducer, {
         value: props.initialValue ? props.initialValue : "",
@@ -65,19 +75,39 @@ const Input = (props) => {
     const lostFocusHandler = () => {
         dispatch({ type: INPUT_BLUR });
     };
-    if (id === "password") {
-        console.log(error);
-    }
+
+    const reveal1Password = () => {
+        setHiddenText(!hiddenText);
+        if (hideUnhideTextIcon == "eye-off") {
+            setHideUnhideTextIcon("eye");
+        } else {
+            setHideUnhideTextIcon("eye-off");
+        }
+    };
+
     return (
         <View style={styles.formControl}>
             <Text style={styles.label}>{props.label}</Text>
             <TextInput
                 {...props}
+                secureTextEntry={hiddenText}
                 style={styles.input}
                 value={inputState.value}
                 onChangeText={textChangeHandler}
                 onBlur={lostFocusHandler}
             />
+            {id === "password" && (
+                <TouchableOpacity
+                    style={styles.inputPasswordSee}
+                    onPress={reveal1Password}
+                >
+                    <Ionicons
+                        name={hideUnhideTextIcon}
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
+            )}
             {!inputState.isValid && inputState.touched && error && (
                 <View style={styles.errorContainer}>
                     <Text style={styles.errorText}>{error}</Text>
@@ -103,6 +133,12 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         borderBottomColor: "#ccc",
         borderBottomWidth: 1,
+        position: "relative",
+    },
+    inputPasswordSee: {
+        position: "absolute",
+        top: 40,
+        right: 0,
     },
     errorContainer: {
         marginVertical: 5,

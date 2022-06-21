@@ -56,8 +56,6 @@ const Login = (props) => {
     }, [error]);
 
     useEffect(() => {
-        console.log(formState);
-        console.log(diabledButton);
         if (formState.formIsValid) {
             console.log("here");
             setDisabledButton(false);
@@ -146,6 +144,7 @@ const Login = (props) => {
                             label="E-Mail"
                             keyboardType="email-address"
                             required
+                            secureTextEntry={false}
                             email
                             autoCapitalize="none"
                             errorText="Please enter a valid email address."
@@ -157,7 +156,7 @@ const Login = (props) => {
                             id="password"
                             label="Password"
                             keyboardType="default"
-                            secureTextEntry
+                            secureTextEntry={true}
                             required
                             password
                             minLength={8}
